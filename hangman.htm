@@ -1,0 +1,116 @@
+<html>
+<head>
+	<title>Save the hangman</title>
+	<style type="text/css">
+		body {background: #664705; font-size: 200%; border: 8px solid #38330;}
+		h1 {text-align: center; font-size: 400%;}
+		div#gameframe {width: 80%; padding: 20px; text-align: center; border: 3px solid #925400}
+		div#wordinput {width: 50%; float: left;}
+		p#guess {color: #33801a; font-style: italic; letter-spacing: 8px;}
+		p#used {color: #E63300; font-style: oblique;letter-spacing: 13px;}
+		img {border: 3px dashed #925400;}
+	</style>
+</head>
+
+<body>
+	<h1>Hangman</h1>
+	<hr />
+	<p id="taunt">This is the traditional game of hangman </p>
+	<div id="outerframe" align="center">
+	<div id="gameframe">
+		<div id="wordinput">
+			<p id="blanks">Here is the word to guess.</p> <p id="guess"></p>
+			<p id="listing">The letters you have used so far are.</p> <p id="used"></p>
+			<input id="form" type="text" name="choose letter" value="" />
+			<button id="submitletter" title="Are you sure?????" onclick="word=onpress(word)">Submit</button>
+		</div>
+		<img id="man" src="H01.gif" />
+	</div>
+	</div>
+	<script type="text/javascript">
+		var word = 'caterpillar';
+		var guess = '';
+		var used = '';
+		var temp = '';
+		function createblank(answer)
+			{
+				for(i=0;i<word.length;i++)
+					{
+						guess += '_'
+					}
+				return guess
+			}
+		guess = createblank(word)
+		document.getElementById("guess").innerHTML=guess;
+		function onpress(word)
+			{
+			guess = document.getElementById("guess").innerHTML;
+			used = document.getElementById("used").innerHTML;
+			var ltr = document.getElementById("form").value;
+			if(guess.indexOf(ltr)!=-1)
+				{
+				alert("this letter has already been guessed sucessfully");
+				document.getElementById("form").value = "";
+				return word;
+				}
+			if(used.indexOf(ltr)!=-1)
+				{
+				alert("this letter has already been guessed unsucessfully");
+				document.getElementById("form").value = "";
+				return word;
+				}
+			if(ltr.length>1)
+				{
+				alert("only one guess at a time");
+				document.getElementById("form").value = "";
+				return word;
+				}
+			var posit = word.indexOf(ltr);
+			if(posit==-1)
+				{
+				temp = document.getElementById("man").src;
+				var handle = temp.lastIndexOf("\/");
+				life = Number(temp.substring(handle+2,handle+4));
+				document.getElementById("used").innerHTML = used + ltr;
+				life = life +1;
+				if(life<10)
+					{
+					document.getElementById("man").src = "H0"+life+".gif";
+					}
+				else
+					{
+					document.getElementById("man").src = "H"+life+".gif";
+					}
+				if(life==6)
+					{
+					document.getElementById("taunt").innerHTML = "OOOOh its getting more serious now";
+					/*document.getElementById("taunt").color = #E63300;*/
+					}
+				if(life==11)
+					{
+					document.getElementById("submitletter").disabled = "disabled";
+					alert("Not so lucky today");
+					}
+				}
+			while(posit!=-1)
+				{
+				temp = "";
+				temp = word.replace(ltr,"0");
+				word = temp;
+				temp = "";
+				temp = guess.substring(0,posit)+ltr+guess.substring(posit+1);
+				guess = temp;
+				posit = word.indexOf(ltr);
+				document.getElementById("guess").innerHTML = guess;
+				if(guess.indexOf("_")==-1)
+					{
+					document.getElementById("submitletter").disabled = "disabled";
+					alert("winner");
+					}
+				}
+			document.getElementById("form").value = "";
+			return word;				
+			}
+	</script>
+</body>
+</html>
